@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Bouncing Ball</h1>
+<canvas id="canvas" width=800 height=400></canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var x = [0, 1, 0.15, 0]; // 2D position and velocity
+var g = 9.8; // gravity
+var t = 0;
+var t1 = 20;
+while (t < t1) {
+    dt = Math.min(0.01, t1 - t);
+    t += dt;
+    var dT = 0;
+    // parabolic path -g/2*dT^2 + x[3]*dT + x[1] = 0
+    var discriminant = x[3]*x[3] + 2*g*x[1];
+    if (discriminant >= 0) {
+        dT = (x[3] + Math.sqrt(discriminant))/g;
+    }
+    dT = Math.max(0, dT);
+    var xi = [];
+    if (dT < dt) { // bounce
+        x[3] = -0.95*(x[3] - g*dT); // dampen
+        xi = [x[0] + x[2]*dT, 0, x[2], x[3]];
+        var ti = t - dt + dT;
+        // bounce up
+        dT = dt - dT;
+        x[1] = -g/2*dT*dT + x[3]*dT;
+        x[3] += -g*dT;
+    }
+    else { // no bounce
+        x[1] += -g/2*dt*dt + x[3]*dt;
+        x[3] += -g*dt;
+    }
+
+    x[0] += x[2]*dt; // x position update
+
+    // draw
+    var radius = 1;
+	ctx.fillStyle = "#0000ff";
+	if (xi.length > 0) {
+        ctx.beginPath();
+        ctx.arc(xi[0]*300, canvas.height - xi[1]*300, radius, 0, 2*Math.PI);
+        ctx.fill();
+//        console.log("%f %f %f %f %f", ti, xi[0], xi[1], xi[2], xi[3]);
+    }
+	ctx.beginPath();
+	ctx.arc(x[0]*300, canvas.height - x[1]*300, radius, 0, 2*Math.PI);
+	ctx.fill();
+//    console.log("%f %f %f %f %f", t, x[0], x[1], x[2], x[3]);
+}
+</script>
+</body>
+</html>
