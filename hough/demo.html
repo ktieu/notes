@@ -5,10 +5,34 @@
 <canvas id="canvas"></canvas>
 <canvas id="canvas2"></canvas>
 <script>
+function Matrix(numRows, numCols) {
+    this.m = numRows;
+    this.n = numCols;
+    this.data = new Array(numRows*numCols);
+    var i;
+    for (i = 0; i < numRows*numCols; ++i) this.data[i] = 0;
+}
+
+// Matrix to canvas imageData
+function matrixToImageData(I, ctx) {
+    var m = I.m;
+    var n = I.n;
+    var imageData = ctx.createImageData(n, m);
+    var i, j;
+    for (i = 0; i < m; ++i) {
+        for (j = 0; j < n; ++j) {
+            imageData.data[4*(i*n + j)] = I.data[i*n + j];
+            imageData.data[4*(i*n + j) + 1] = I.data[i*n + j];
+            imageData.data[4*(i*n + j) + 2] = I.data[i*n + j];
+            imageData.data[4*(i*n + j) + 3] = 255;
+        }
+    }
+    return imageData;
+}
+
 // example image
-var imageWidth = 196;
-var imageHeight = 113;
-var image = [234,210,213,213,214,214,216,216,215,215,214,214,215,216,216,216,216,216,215,
+var I = new Matrix(113,196);
+I.data = [234,210,213,213,214,214,216,216,215,215,214,214,215,216,216,216,216,216,215,
 215,216,217,215,214,215,215,215,215,216,216,216,216,216,217,217,218,217,218,
 218,218,219,219,219,218,218,218,218,218,217,218,220,221,221,221,221,221,221,
 222,222,223,224,223,222,221,221,223,224,223,223,223,222,222,222,222,221,222,
@@ -1100,79 +1124,68 @@ var image = [234,210,213,213,214,214,216,216,215,215,214,214,215,216,216,216,216
 164,167,169,166,168,165,163,160,157,155,161,165,169,175,179,180,183,184,179,
 218];
 
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
-var m = imageHeight;
-var n = imageWidth;
-canvas.width = n;
-canvas.height = m;
-var imageData = ctx.createImageData(n, m);
-var i, j;
-for (i = 0; i < m; ++i) {
-    for (j = 0; j < n; ++j) {
-        imageData.data[4*(i*n + j)] = image[i*n + j];
-        imageData.data[4*(i*n + j) + 1] = image[i*n + j];
-        imageData.data[4*(i*n + j) + 2] = image[i*n + j];
-        imageData.data[4*(i*n + j) + 3] = 255;
-    }
-}
-ctx.putImageData(imageData, 0, 0);
-var s = Math.round(Math.sqrt(2)*(imageHeight > imageWidth ? imageHeight : imageWidth)/2)+1;
-var cx = imageWidth/2;
-var cy = imageHeight/2;
-var S = 2*s;
-var accum = new Array(180*S);
-for (i=0;i<180*S;++i) accum[i]=0;
-ctx.fillStyle = "rgba(0,0,255,0.25)";
-for (i = 2; i < m - 2; ++i) {
-    for (j = 2; j < n - 2; ++j) {
-        var u = 10*(image[i*n + j+1] - image[i*n + j-1]) + 3*(image[(i-1)*n + j+1] + image[(i+1)*n + j+1] - image[(i-1)*n + j-1] - image[(i+1)*n + j-1]);
-        var v = 10*(image[(i+1)*n + j] - image[(i-1)*n + j]) + 3*(image[(i+1)*n + j-1] + image[(i+1)*n + j+1] - image[(i-1)*n + j-1] - image[(i-1)*n + j+1]);
-        if (u*u + v*v >= 3000000) {
-            ctx.beginPath();
-            ctx.arc(j, i, 1, 0, 2*Math.PI);
-            ctx.fill();
-            for (var t = 0; t < 180; ++t) {
-                var r = (j-cx)*Math.cos(t*Math.PI/180) + (i-cy)*Math.sin(t*Math.PI/180);
-                var a=Math.round(r+s);
-                ++accum[a*180 + t];
+// Hough lines
+function hough(I, ctx) {
+    var m = I.m;
+    var n = I.n;
+    var data = I.data;
+    var S = Math.ceil(Math.sqrt(m*m + n*n));
+    var accum = new Matrix(2*S+1,180);
+    var i, j;
+
+    for (i = 0; i < accum.m*accum.n; ++i) accum.data[i] = 0;
+
+    ctx.fillStyle = "rgba(0,0,255,0.5)";
+
+    for (i = 0; i < m; ++i) {
+        for (j = 0; j < n; ++j) {
+            var u = 10*(data[i*n + j+1] - data[i*n + j-1]) + 3*(data[(i-1)*n + j+1] + data[(i+1)*n + j+1] - data[(i-1)*n + j-1] - data[(i+1)*n + j-1]);
+            var v = 10*(data[(i+1)*n + j] - data[(i-1)*n + j]) + 3*(data[(i+1)*n + j-1] + data[(i+1)*n + j+1] - data[(i-1)*n + j-1] - data[(i-1)*n + j+1]);
+            if (u*u + v*v > 1000000) {
+                ctx.beginPath();
+                ctx.arc(j, i, 1, 0, 2*Math.PI);
+                ctx.fill();
+                for (var t = 0; t < accum.n; ++t) {
+                    var r = Math.round(j*Math.cos((t-90)*Math.PI/180) + i*Math.sin((t-90)*Math.PI/180));
+                    ++accum.data[(r+S)*accum.n + t];
+                }
             }
         }
     }
+
+    return accum;
 }
-var canvas2 = document.getElementById("canvas2");
-var ctx2 = canvas2.getContext("2d");
-canvas2.width = 180;
-canvas2.height = S;
-var imageData2 = ctx2.createImageData(180, S);
-var max = Math.max(...accum);
-for (i = 0; i < S; ++i) {
-    for (j = 0; j < 180; ++j) {
-        var val = Math.round(accum[i*180+j]/max*255);
-        imageData2.data[4*(i*180 + j)] = val;
-        imageData2.data[4*(i*180 + j) + 1] = val;
-        imageData2.data[4*(i*180 + j) + 2] = val;
-        imageData2.data[4*(i*180 + j) + 3] = 255;
-    }
-}
-ctx2.putImageData(imageData2, 0, 0);
-ctx.strokeStyle="rgba(255,0,0,0.5)";
-ctx.lineWidth=2;
-for (i = 1; i < S-1; ++i) {
-    for (j = 1; j < 180 - 1; ++j) {
-        if (accum[i*180 + j] >= 50) {
-                if (j >= 45 && j <= 135) {
-                    var x1 = 0;
-                    var y1 = (i-S/2) - (x1-imageWidth/2)*Math.cos(j*Math.PI/180)/Math.sin(j*Math.PI/180) + imageHeight/2;
-                    var x2 = imageWidth;
-                    var y2 = (i-S/2) - (x2-imageWidth/2)*Math.cos(j*Math.PI/180)/Math.sin(j*Math.PI/180) + imageHeight/2;
-                }
-                else {
-                    var y1 = 0;
-                    var x1 = (i-S/2) - (y1-imageHeight/2)*Math.sin(j*Math.PI/180)/Math.cos(j*Math.PI/180) + imageWidth/2;
-                    var y2 = imageHeight;
-                    var x2 = (i-S/2) - (y2-imageHeight/2)*Math.sin(j*Math.PI/180)/Math.cos(j*Math.PI/180) + imageWidth/2;
-                }
+
+// toy image with two dots
+/*var I = new Matrix(30,30);
+I.data[25*30+5] = 255;
+I.data[10*30+20] = 255;*/
+
+// draw image
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var m = I.m;
+var n = I.n;
+canvas.width = n;
+canvas.height = m;
+ctx.putImageData(matrixToImageData(I, ctx),0,0);
+
+accum = hough(I,ctx);
+
+// draw lines
+ctx.strokeStyle = "rgba(255,0,0,0.5)";
+var S = (accum.m - 1)/2;
+for (i = 0; i < accum.m; ++i) {
+    for (j = 0; j < accum.n; ++j) {
+        if (accum.data[i*accum.n + j] >= 50) {
+            var t = j - 90;
+            var r = i - S;
+            var u = Math.cos(t*Math.PI/180);
+            var v = Math.sin(t*Math.PI/180);
+            var x1 = u*r + S*(-v);
+            var y1 = v*r + S*u;
+            var x2 = u*r - S*(-v);
+            var y2 = v*r - S*u;
             ctx.beginPath();
             ctx.moveTo(x1,y1);
             ctx.lineTo(x2,y2);
@@ -1180,6 +1193,15 @@ for (i = 1; i < S-1; ++i) {
         }
     }
 }
+
+// draw hough space
+var canvas2 = document.getElementById("canvas2");
+var ctx2 = canvas2.getContext("2d");
+canvas2.width = accum.n;
+canvas2.height = accum.m;
+var max = Math.max(...accum.data);
+for (i = 0; i < accum.m*accum.n; ++i) accum.data[i] *= 255/max;
+ctx2.putImageData(matrixToImageData(accum,ctx2), 0, 0);
 
 </script>
 </body>
