@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Ray Tracing</h1>
+<canvas id="canvas"></canvas>
+<script>
+function Vector(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+
+    this.normalize = function() {
+        var len = Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+        this.x = this.x/len;
+        this.y = this.y/len;
+        this.z = this.z/len;
+    }
+    this.dot = function(v) {
+        return this.x*v.x + this.y*v.y + this.z*v.z;
+    }
+}
+
+function Sphere(radius, r, g, b, x, y, z) {
+    this.radius = radius;
+    this.position = new Vector(x,y,z);
+    this.color = new Vector(r,g,b);
+
+    this.intersect = function(origin, dir) {
+        var v = new Vector(this.position.x - origin.x, this.position.y - origin.y, this.position.z - origin.z);
+        var tca = v.dot(dir);
+        if (tca >= 0) { // in front of origin
+            var d = Math.sqrt(v.dot(v) - tca*tca);
+            if (d <= this.radius) { // hit
+                var thc = Math.sqrt(this.radius*this.radius - d*d);
+                return [tca - thc, tca + thc];
+            }
+        }
+        return false;
+    }
+}
+
+function trace(eye, ray, objects) {
+    var obj = false;
+    var near = 1e10;
+    var i;
+    for (i = 0; i < objects.length; ++i) {
+        var t = objects[i].intersect(eye, ray);
+        if (t) {
+            if (t[0] < 0) t[0] = t[1]; 
+            if (t[0] < near) {
+                near = t[0];
+                obj = objects[i];
+            }
+        }
+    }
+
+    if (obj) {
+        var hit = new Vector();
+        hit.x = eye.x;
+        hit.y = eye.y;
+        hit.z = eye.z;
+        hit.x += near*ray.x;
+        hit.y += near*ray.y;
+        hit.z += near*ray.z;
+        var n = hit;
+        n.x -= obj.position.x;
+        n.y -= obj.position.y;
+        n.z -= obj.position.z;
+        n.normalize();
+        var val = n.z*255;
+        return [val*obj.color.x, val*obj.color.y, val*obj.color.z];
+    }
+    else {
+        return [0,0,0]; // background pixel
+    }
+}
+
+var width = 640;
+var height = 480;
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var imageData = ctx.createImageData(width, height);
+var eye = new Vector(0,0,0);
+var objects = new Array();
+objects.push(new Sphere(4, 1,0.3,0.3, 0,0,-40));
+objects.push(new Sphere(1, 0.1,1,0.2, 3,1,-25));
+objects.push(new Sphere(16, 0.1,0.3,1, -3,-3,-100));
+// camera origin at (0,0,0)
+// image plane at z = -1
+// x axis is image x axis
+// y axis is negative of image y axis
+var fov = 30;
+var aspectRatio = width/height;
+var angle = Math.tan(Math.PI/2*fov/180);
+var i, j;
+for (i = 0; i < height; ++i) {
+    for (j = 0; j < width; ++j) {
+        imageData.data[4*(i*width + j)] = 0;
+        imageData.data[4*(i*width + j) + 1] = 0;
+        imageData.data[4*(i*width + j) + 2] = 0;
+        imageData.data[4*(i*width + j) + 3] = 255;
+    }
+}
+
+for (i = 0; i < height; ++i) {
+    for (j = 0; j < width; ++j) {
+        var x = (2*(j+0.5)/width - 1)*aspectRatio*angle;
+        var y = (1 - 2*(i+0.5)/height)*angle;
+        var ray = new Vector(x,y,-1);
+        ray.normalize();
+        var pixel = trace(eye, ray, objects);
+        imageData.data[4*(i*width + j)] = pixel[0];
+        imageData.data[4*(i*width + j) + 1] = pixel[1];
+        imageData.data[4*(i*width + j) + 2] = pixel[2];
+        imageData.data[4*(i*width + j) + 3] = 255;
+    }
+}
+
+canvas.width = width;
+canvas.height = height;
+ctx.putImageData(imageData,0,0);
+</script>
+</body>
+</html>
