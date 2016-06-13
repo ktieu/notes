@@ -67,7 +67,9 @@ function trace(eye, ray, objects) {
         n.y -= obj.position.y;
         n.z -= obj.position.z;
         n.normalize();
-        var val = n.z*255;
+        var light = new Vector(-1.5,-1,-0.5);
+        light.normalize();
+        var val = -n.dot(light)*255;
         return [val*obj.color.x, val*obj.color.y, val*obj.color.z];
     }
     else {
