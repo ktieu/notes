@@ -1,0 +1,33 @@
+<video id="video"></video>
+<canvas id="canvas"></canvas>
+<script>
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+function handleVideo(stream) {
+    var video = document.getElementById("video");
+    video.src = window.URL.createObjectURL(stream);
+    video.width = 640;
+    video.height = 480;
+    video.onloadedmetadata = function(e) {
+        video.play();
+    }
+    var canvas = document.getElementById("canvas");
+    canvas.width = video.width;
+    canvas.height = video.height;
+    var ctx = canvas.getContext('2d');
+    setInterval(function() {
+        ctx.drawImage(video, 0, 0, video.width, video.height);
+        var frame = ctx.getImageData(0, 0, video.width, video.height);
+        for (var i=0; i<frame.height; ++i) {
+            for (var j=0; j<frame.width; ++j) {
+                var g = frame.data[4*(i*frame.width + j)+1];
+                frame.data[4*(i*frame.width + j)] = g;
+                frame.data[4*(i*frame.width + j)+2] = g;
+            }
+        }
+        ctx.putImageData(frame, 0, 0);
+    }, 33);
+}
+function handleError(e) {
+}
+navigator.getUserMedia({video: true}, handleVideo, handleError)
+</script>
