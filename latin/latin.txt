@@ -100,3 +100,9 @@ Third person singular active ends in -t and the third person plural in -nt.  For
 # Word Order
 
 Normal word order is subject + modifiers of the subject + indirect object + direct object + adverb + verb.  For example, filia + agricolae + dominae + pecuniam + non + dat.
+
+# Apposition
+
+An appositive agrees in case with the noun which it explains.
+
+Lesbia ancilla est bona.
