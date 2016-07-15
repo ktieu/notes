@@ -1,0 +1,102 @@
+# Latin
+
+# Vocabulary
+
+quia or quod, because
+quis, who?
+cuius, whose?
+cui, to whom?
+quid, what?
+quem, whom?
+
+deinde, then, in the next place
+
+Object of a preposition must be accusative or ablative.
+
+# Nouns
+
+The five declensions of nouns is determined by the ending of the genitive singular.
+
+The accusative singular of masculines and feminines ends in -m and the accusative plural in -s, e.g., dominam, dominum, dominas, dominos
+
+The dative and ablative plural are always the same, e.g., dominis.
+
+The nominative, accusative, and vocative of neuter nouns are the same and in the plural end in -a, e.g, pilum, pila.
+
+The vocative is the same as the noinative except for the second declension, e.g., domine.
+
+## First Declension
+
+First declension nouns end in -ae in the genitive singular.  For example, domina, -ae.  They are feminine, unless they denote males, e.g., nauta.
+
+The nominative, genitive, and accusative cases in Latin correspond to the nominative, possessive, and objective cases in English.
+
+nom domina bona
+gen dominae bonae
+dat dominae bonae
+acc dominam bonam
+abl domina bona
+nom dominae bonae
+gen dominarum bonarum
+dat dominis bonis
+acc dominas bonas
+abl dominis bonis
+
+base (domin-) + termination (-a)
+
+But deabus and filiabus for dat and abl plural instead of -is.
+
+Filia agricolae nautis fugam nuntiat.  The farmer's daughter announces the flight to the sailors.
+Filia agricolae est grata dominae.  The farmer's daughter is pleasing to the lady.
+
+## Second Declension
+
+Second declension nouns end in -i in the genitive singular.  For example, dominus, -i.  They are masculine or neuter for -um nouns, e.g., pilum.
+
+nom dominus bonus
+gen domini boni
+dat domino bono
+acc dominum bonum
+abl domino bono
+nom domini boni
+gen dominorum bonorum
+dat dominis bonis
+acc dominos bonos
+abl dominis bonis
+
+nom pilum bonum
+gen pili boni
+dat pilo bono
+acc pilum bonum
+abl pilo bono
+nom pila bona
+gen pilorum bonorum
+dat pilis bonis
+acc pila bona
+abl pilis bonis
+
+base (domin-) + termination (-us)
+
+The vocative is domine.
+
+## Predicate Noun
+
+Predicate noun agrees in case with the subject of the verb, e.g., Lesbia est ancilla.
+
+# Adjectives
+
+Adjectives and noun agree in gender, number, and case.
+
+Attributive adjective
+Puella parva bonam deam amat.
+
+Predicate adjective
+Puella est parva.
+
+# Verbs
+
+Third person singular active ends in -t and the third person plural in -nt.  For example nauta pugnat, nautae pugnant.
+
+# Word Order
+
+Normal word order is subject + modifiers of the subject + indirect object + direct object + adverb + verb.  For example, filia + agricolae + dominae + pecuniam + non + dat.
