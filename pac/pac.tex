@@ -12,10 +12,10 @@
 The PAC (Probabably Approximately Correct) machine learning framework tackles the question of what is efficiently learnable.
 
 Let $\mathcal{X}$ be the input space and $\mathcal{Y} = \{0, 1\}$ be the output space.  A concept $c$ is a subset of $\mathcal{X}$ or a mapping $c: \mathcal{X} \mapsto \mathcal{Y}$.  A concept class $C$ is a set of concepts.  The learner is given a sample $S$ consisting of examples $(x_i, y_i)$ draw from a distribution $D$ and must select an hypothesis $h$ from a set of hypotheses $H$ to minimize the risk $R(h)$.  The risk is the generalization error:
-$$ R(h) = P_D[h(x) \ne c(x)] = E_D[1_{h(x) \ne c(x)}]. $$
+$$ R(h) = P_D(h(x) \ne c(x)) = E_D[1_{h(x) \ne c(x)}]. $$
 
 A concept class $C$ is PAC-learnable if there exists an algorithm $A$ such that for any $\epsilon > 0$, $\delta > 0$, $c \in C$, and $D$, the following holds for any sample size $m \ge poly(1/\epsilon, 1/\delta)$:
-$$ P_{D^m}[R(h) \le \epsilon] \ge 1 - \delta. $$
+$$ P_{D^m}(R(h) \le \epsilon) \ge 1 - \delta. $$
 The idea is that $A$ can probably approximate $c$ with a polynomial sample size.
 
 \section{Simple Example of Positive Rays}
@@ -25,7 +25,9 @@ Let $C$ be the set of all positive rays on the real line, so $\mathcal{X} = R$ a
 x_0 = \arg \max_{x_i} y_i &= 0 \\
 x_1 = \arg \min_{x_i} y_i &= 1.
 \end{align*}
-The algorithm $A$ outputs $h_\theta$ where $x_0 < \theta < x_1$.
+The algorithm $A$ outputs $h_\gamma$ where $x_0 < \gamma < x_1$.
+
+Let $\theta_0 = \arg \max_x P((x, \theta] \le \epsilon)$, and $\theta_1 = \arg \max_x P([\theta, x) \le \epsilon)$, and define $\gamma_0$ and $\gamma_1$ similarly.  The chosen hypothesis $h_\gamma$ disagrees with the concept $c_\theta$ if $\gamma_0 < \theta_0$ or $\gamma_1 > \theta_1$.
 
 % Relate this to Stoller splits.
 \end{document}
