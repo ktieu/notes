@@ -136,3 +136,10 @@ print money, to buy government bonds so government can spend money, but causes i
 leveraging 50 years
 depression 2--3 years
 reflation 7--10 years
+
+
+
+# Peter Lynch
+Success in investing depends on investor mostly, not on the market.
+One must look for stocks that are not mainstream.
+Institutional investors restricted by rules which individual investors can ignore.
