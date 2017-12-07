@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{amsmath}
+
+\begin{document}
+\title{Gaussian Processes}
+\author{Kinh Tieu}
+\date{August 28, 2017}
+\maketitle
+
+\section{Introduction}
+
+A Gaussian process (GP) extends Gaussian distributions to functions.  Data from any finite subset of the range of a GP follows a Gaussian distribution.
+
+\begin{equation}
+y = f(x) + \mathcal{N}(0,\sigma^2_n)
+\end{equation}
+
+A GP is assumed to be zero mean with a covariance function:
+\begin{equation}
+k(x,x_i) = \sigma^2_f \exp \left( \frac{-(x-x_i)^2}{2h^2} \right) + \sigma^2_n \delta(x,x_i)
+\end{equation}
+
+\begin{equation}
+\begin{pmatrix}
+\mathbf{y}_{\cdot} \\
+y
+\end{pmatrix}
+\tilde \mathcal{N}\left(0,
+\begin{pmatrix}
+K_{\cdot\cdot} & K^T_{\cdot} \\
+K_{\cdot} & K
+\end{pmatrix}
+\right)
+\end{equation}
+\end{document}
