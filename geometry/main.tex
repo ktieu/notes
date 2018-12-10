@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{amsmath, graphicx}
+
+\begin{document}
+\title{Geometry}
+\author{}
+\date{}
+\maketitle
+
+\section{Intersection of 3D Lines}
+
+The lines must be coplanar for an intersection to exist.
+
+\begin{align}
+p' &= p + su \\
+q' &= q + tv
+\end{align}
+
+\begin{align}
+p + su &= q + tv \\
+su &= q - p + tv \\
+su \times v &= (q - p) \times v + 0 \\
+s (u \times v)'(u \times v) &= (u \times v)'[(q - p) \times v] \\
+s &= \frac{(u \times v)'[(q - p) \times v]}{(u \times v)'(u \times v)}
+\end{align}
+
+Note that $u \times v$ and $(q-p) \times v$ are parallel because $u$, $v$, and $q-p$ are coplanar.
+
+\end{document}
