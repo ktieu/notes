@@ -48,8 +48,8 @@ where $C$ is the covariance matrix.  So the optimization problem is as follows:
 \end{equation}
 The above problem can be solved with Lagrange multipliers:
 \begin{align}
-L &=  w' C w + \lambda (w'w - 1) \\
-\frac{\partial L}{\partial w} &= 2Cw - w\lambda w = 0 \\
+L &=  w' C w + \lambda (1 - w'w) \\
+\frac{\partial L}{\partial w} &= 2Cw - 2\lambda w = 0 \\
 Cw &= \lambda w.
 \end{align}
 The last line in the derivation above shows that $w$ is an eigenvector of the $C$, with eigenvalue $\lambda$.  By substitution, we can compute the variance as,
