@@ -9,10 +9,28 @@
 
 \section{A Single Neuron}
 
+Logistic regression.
+
 \begin{equation}
-y(x) = \frac{1}{1 + e^{-w^T x}}
+y = \frac{1}{1 + e^{-w^T x}}
 \end{equation}
 
 Justification for the above linear logistic function.
+
+\begin{equation}
+\frac{p(y_1 | x)}{p(y_0 | x)} = \frac{p(x | y_1)}{p(x | y_0)} \frac{p(y_1)}{p(y_0)}
+\end{equation}
+
+Assume Gaussian distributions.
+\begin{equation}
+p(x | y) = \left|\frac{\Omega}{2\pi}\right|^{1/2} \exp\left(-\frac{1}{2}(x-\mu_y)^T\Omega(x-\mu_y\right)
+\end{equation}
+where $\Omega$ is the precision matrix.
+
+\begin{align}
+\frac{p(y_1 | x)}{p(y_0 | x)} &= \exp\left(-\frac{1}{2}(x-\mu_1)^T\Omega(x-\mu_1) + \frac{1}{2}(x-\mu_0)^T\Omega(x-\mu_0) + \ln \frac{p(y_1)}{p(y_0)}\right) \\
+& =  \exp\left((\Omega(\mu_1-\mu_0))^Tx -\frac{1}{2}(\mu_1^T\Omega\mu_1 - \mu_0^T\Omega\mu_0) - \ln \frac{p(y_1)}{p(y_0)}\right) \\
+& =  \exp(w^Tx + b)
+\end{align}
 
 \end{document}
