@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+<script>
+var win = window,
+d = document,
+e = d.documentElement,
+g = d.getElementsByTagName('body')[0],
+width = win.innerWidth || e.clientWidth || g.clientWidth,
+height = win.innerHeight|| e.clientHeight|| g.clientHeight;
+
+var upperAngleInput = document.createElement("input");
+upperAngleInput.type = "range";
+upperAngleInput.min = 0;
+upperAngleInput.max = 359;
+//document.body.appendChild(upperAngleInput);
+
+var lowerAngleInput = document.createElement("input");
+lowerAngleInput.type = "range";
+lowerAngleInput.min = 0;
+lowerAngleInput.max = 359;
+//document.body.appendChild(lowerAngleInput);
+
+var canvas = document.createElement("canvas");
+canvas.id = "canvas";
+canvas.width = width;
+canvas.height = height;
+document.body.appendChild(canvas);
+var context = canvas.getContext("2d");
+
+canvas.addEventListener("mousedown", getPosition, false);
+
+var targetX = 500;
+var targetY = 400;
+var targetRadius = 4;
+
+var robotX = 400;
+var robotY = 400;
+var robotUpperArmAngle = 0;
+var robotLowerArmAngle = 0;
+var robotUpperArmLen = 100;
+var robotLowerArmLen = 80;
+var robotJointRadius = 8;
+
+function getPosition(event)
+{
+    var canvas = document.getElementById("canvas");
+    targetX = event.x - canvas.offsetLeft;
+    targetY = event.y - canvas.offsetTop;
+    var a = robotUpperArmLen;
+    var c = robotLowerArmLen;
+    var u = targetX - robotX;
+    var v = targetY - robotY;
+    var b = Math.sqrt(u * u + v * v);
+    var alpha = Math.acos((a * a + b * b - c * c) / (2 * a * b));
+    var beta = Math.acos((a * a + c * c - b * b) / (2 * a * c));
+    if (!isNaN(alpha) && !isNaN(beta))
+    {
+        robotUpperArmAngle = alpha + Math.atan2(v, u);
+        robotLowerArmAngle = Math.PI + beta;
+    }
+}
+
+frameRender = function() 
+{
+    //robotUpperArmAngle = upperAngleInput.value * Math.PI / 180;
+    //robotLowerArmAngle = lowerAngleInput.value * Math.PI / 180;
+
+    var robotUpperArmU = Math.cos(robotUpperArmAngle);
+    var robotUpperArmV = Math.sin(robotUpperArmAngle);
+    var robotUpperArmX = robotX + robotUpperArmU * robotUpperArmLen;
+    var robotUpperArmY = robotY + robotUpperArmV * robotUpperArmLen;
+
+    var robotLowerArmU = Math.cos(robotLowerArmAngle + robotUpperArmAngle);
+    var robotLowerArmV = Math.sin(robotLowerArmAngle + robotUpperArmAngle);
+    var robotLowerArmX = robotUpperArmX + robotLowerArmU * robotLowerArmLen;
+    var robotLowerArmY = robotUpperArmY + robotLowerArmV * robotLowerArmLen;
+
+    context.clearRect(0, 0, width, height);
+
+    context.beginPath();
+    context.moveTo(robotX, robotY);
+    context.lineTo(robotUpperArmX, robotUpperArmY);
+    context.lineWidth = robotJointRadius / 2;
+    context.strokeStyle = "#000000";
+    context.stroke();
+
+    context.beginPath();
+    context.arc(robotX, robotY, robotJointRadius, 0, 2 * Math.PI);
+    context.fillStyle = "#FF0000";
+    context.fill();
+
+    context.beginPath();
+    context.moveTo(robotUpperArmX, robotUpperArmY);
+    context.lineTo(robotLowerArmX, robotLowerArmY);
+    context.lineWidth = robotJointRadius / 2;
+    context.strokeStyle = "#000000";
+    context.stroke();
+
+    context.beginPath();
+    context.arc(robotUpperArmX, robotUpperArmY, robotJointRadius, 0, 2 * Math.PI);
+    context.fillStyle = "#00FF00";
+    context.fill();
+
+    context.beginPath();
+    context.arc(targetX, targetY, targetRadius, 0, 2 * Math.PI);
+    context.fillStyle = "#0000FF";
+    context.fill();
+} 
+     
+frameRenderLoop = function() 
+{
+    requestAnimationFrame(frameRenderLoop);
+    frameRender();
+}
+
+frameRenderLoop(); 
+     
+</script>
+</body>
+</html>
